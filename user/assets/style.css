@@ -1,0 +1,239 @@
+/* سلايدر المنتجات */
+.slider_products {
+  margin: 20px 0;
+}
+
+.slide_product {
+  position: relative;
+}
+
+/* تنسيق الكارد */
+.product {
+  background-color: #fff;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+  overflow: hidden;
+}
+
+.product:hover {
+  transform: scale(1.05);
+}
+
+/* الصورة داخل الكارد */
+.product .img_product {
+  position: relative;
+  height: 180px; /* يمكن تعديل الارتفاع حسب الحاجة */
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 15px;
+  transition: transform 0.3s ease;
+}
+
+.product .img_product img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.product:hover .img_product img {
+  transform: scale(1.1);
+}
+
+/* نص اسم المنتج */
+.product .product_name {
+  font-size: 1rem;
+  color: #333;
+  margin-bottom: 10px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* تنسيق الأسعار */
+.price {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.price p {
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.price .old_price {
+  font-size: 1rem;
+  color: #aaa;
+  text-decoration: line-through;
+}
+
+/* الأزرار والتفاعل */
+.icons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.icons .btn_add_cart {
+  background-color: #28a745;
+  padding: 8px 16px;
+  color: white;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.icons .btn_add_cart:hover {
+  background-color: #218838;
+}
+
+.icons .icon_product {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: 50%;
+  background-color: #f7f7f7;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.icons .icon_product:hover {
+  background-color: #ddd;
+}
+
+.icons .icon_product i {
+  font-size: 1.2rem;
+  color: #333;
+}
+
+        .swiper-container {
+          position: relative;
+          /* ضروري لجعل الأزرار مرتبطة بالـ swiper */
+        }
+
+        a {
+          text-decoration: none;
+        }
+
+        .swiper-slide {
+          display: flex;
+          flex-direction: column;
+          /* ترتيب العناصر عموديًا */
+          align-items: center;
+          /* محاذاة العناصر أفقيًا في المنتصف */
+          justify-content: space-between;
+          /* توزيع العناصر بالتساوي داخل الكارد */
+          padding: 10px;
+          box-sizing: border-box;
+          /* لتضمين البادينج في أبعاد العنصر */
+          height: 350px;
+          /* ارتفاع الكارد */
+          background-color: #f8f8f8;
+          /* لون خلفية للكارد (اختياري) */
+          border-radius: 8px;
+          /* زوايا مستديرة (اختياري) */
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          /* إضافة ظل للكارد */
+        }
+
+        .swiper-slide img {
+          justify-content: center;
+          align-content: center;
+          height: 120px;
+          width: 120px;
+          /* object-fit: cover; */
+          /* لضمان ملاءمة الصورة داخل الإطار */
+          /* border-radius: 50%; */
+          /* جعل الصور دائرية (اختياري) */
+          margin-bottom: 10px;
+          /* مسافة أسفل الصورة */
+        }
+
+        .swiper-slide h6 {
+          font-size: 16px;
+          margin: 5px 0;
+          /* مسافة بين النصوص */
+          text-align: center;
+          /* محاذاة النصوص للوسط */
+        }
+
+        .swiper-slide p {
+          font-size: 16px;
+          color: red;
+          /* لون النص (اختياري) */
+          text-align: center;
+          /* محاذاة النصوص للوسط */
+          margin: 5px 0;
+        }
+
+        .swiper-slide .old-price {
+          font-size: 14px;
+          /* حجم النص */
+          color: #999;
+          /* لون باهت للإشارة إلى أنه غير فعال */
+          text-decoration: line-through;
+          /* خط على النص للإشارة إلى السعر القديم */
+          margin-right: 5px;
+          /* مسافة بين السعر القديم والجديد */
+        }
+
+        .swiper-slide button {
+          margin-top: 10px;
+          /* مسافة أعلى الزر */
+          padding: 5px 10px;
+          font-size: 14px;
+          border: none;
+          border-radius: 5px;
+          background-color: #007bff;
+          /* لون الزر */
+          color: white;
+          /* لون النص داخل الزر */
+          cursor: pointer;
+          transition: background-color 0.3s;
+        }
+
+        .swiper-slide button:hover {
+          background-color: #0056b3;
+          /* تغيير لون الزر عند التمرير */
+        }
+
+        .swiper-button-next,
+        .swiper-button-prev {
+          position: absolute;
+          /* جعل الأزرار مرتبطة بموقع الـ swiper */
+          top: 50%;
+          /* محاذاة رأسية في منتصف الـ swiper */
+          transform: translateY(-50%);
+          /* لضبط المركز */
+          width: 40px;
+          height: 40px;
+          background-color: rgba(0, 0, 0, 0.5);
+          /* خلفية شفافة */
+          color: white;
+          border-radius: 50%;
+          z-index: 10;
+          /* لضمان ظهور الأزرار فوق المحتوى */
+        }
+
+        .swiper-button-next {
+          right: 10px;
+          /* على يمين الـ swiper */
+        }
+
+        .swiper-button-prev {
+          left: 10px;
+          /* على يسار الـ swiper */
+        }
+
+        /* التأثير عند التمرير بالفأرة */
+        .swiper-button-next:hover,
+        .swiper-button-prev:hover {
+          background-color: rgba(0, 0, 0, 0.7);
+        }

@@ -33,4 +33,4 @@
     <link href="../uploads/css/style.css" rel="stylesheet">
 </head>
 
-<body>
+<body style="background-color: whitesmoke;">

@@ -63,6 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             // إذا اختار المستخدم "Keep me logged in"
             if (isset($_POST['remember_me'])) {
+                setcookie('userID', $row['userID'], time() + (86400 * 30), "/");
                 setcookie('username', $userName, time() + (86400 * 30), "/"); // صالح لمدة 30 يومًا
                 setcookie('password', $row['password'], time() + (86400 * 30), "/");
             }

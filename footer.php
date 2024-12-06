@@ -1,0 +1,6 @@
+<div class="inActiveTabBorderBottom" style="width: 100%; display: flex; flex: 0 0 auto; justify-content: space-between; bottom: 0px; z-index: 2; height: 65px; background-color: rgb(255, 255, 255); box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 4px; cursor: pointer;">
+    <div class="" style="width: 33%; height: 65px; display: flex; align-items: center; justify-content: center;"><img id="tab-nav-search" src="/_next/static/media/search_icon.5a636dbf.svg" width="32" height="24" alt="search_button" class=""></div>
+    <div class="" style="width: 33%; height: 65px; display: flex; align-items: center; justify-content: center; position: relative;"><img id="tab-nav-order" src="/_next/static/media/orderIcon.868a65da.svg" width="32" height="32" alt="orders_button" class=""></div>
+    <div class="activeTabBorderBottom" style="width: 33%; height: 65px; display: flex; align-items: center; justify-content: center;"><img id="tab-nav-home" src="/_next/static/media/homeIconActive.0ac18a83.svg" width="32" height="24" alt="home_button" class=""></div>
+    <div class="" style="width: 33%; height: 65px; display: flex; align-items: center; justify-content: center;"><img id="tab-nav-profile" src="/_next/static/media/profileIcon.e602cfef.svg" width="32" height="24" alt="profile_button" class=""></div>
+</div>

@@ -102,11 +102,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit'])) {
                 $_SESSION['username'] = $userName;
                 // $_SESSION['role'] = 'user'; // Store username in session
 
-                // setcookie("userID", $userID, time() + (90 * 24 * 60 * 60), "/"); // 3 months expiration
-                // setcookie("username", $userName, time() + (90 * 24 * 60 * 60), "/"); // 3 months expiration
+                setcookie("userID", $userID, time() + (90 * 24 * 60 * 60), "/"); // 3 months expiration
+                setcookie("username", $userName, time() + (90 * 24 * 60 * 60), "/"); // 3 months expiration
+                setcookie("password", $hashed_pass, time() + (90 * 24 * 60 * 60), "/"); // 3 months expiration
                 Generate_OTP_Code();
                 send_OTP_Email($email, $userName);
-                header("location: auth.php");
+                header("location: paymob2.php");
             } else {
                 showAlerts(null, "حدث خطأ ما!", "signup.php");
             }

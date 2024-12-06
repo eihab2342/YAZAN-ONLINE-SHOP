@@ -120,8 +120,8 @@ CSS STRUCTURE:
 }
 
 body {
-  --bs-link-color: #333;
-  --bs-link-hover-color:#333;
+  --bs-link-color: #fdf5f5;
+  --bs-link-hover-color:#fffafa;
 
   --bs-link-color-rgb: 40,40,40;
   --bs-link-hover-color-rgb: 0,0,0;
@@ -136,7 +136,7 @@ body {
   --bs-body-font-size: 1rem;
   --bs-body-font-weight: 400;
   --bs-body-line-height: 2;
-  --bs-body-color: #747474;
+  --bs-body-color: #ffffff;
 
   --bs-primary: #FFC43F;
   --bs-primary-rgb: 255, 196, 63;

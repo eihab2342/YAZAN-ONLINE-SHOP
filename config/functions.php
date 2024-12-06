@@ -470,11 +470,11 @@ function updateProduct($productId, $productName, $productDescription, $price, $o
 }
 
 // دالة لحذفdelete  منتج من قاعدة البيانات
-function deleteProduct($productId) {
+function deleteProduct($product_id) {
     global $conn;
 
     // بننفذ استعلام الحذف
-    $sql = "DELETE FROM products_data WHERE id = $productId";
+    $sql = "DELETE FROM products_data WHERE id = $product_id";
     $result = mysqli_query($conn, $sql);
 
     if ($result) {

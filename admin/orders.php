@@ -3,15 +3,16 @@ require '../assets/header.php';
 require '../config/connection.php';
 require '../config/functions.php';
 
-    if (!isset($_SERVER['HTTP_REFERER']) || parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST) != $_SERVER['HTTP_HOST']) {
-        showAlerts(null, "الرجاء تسجيل الدخول أولا ", "../login.php");
-        exit();
-    }
+if (!isset($_SERVER['HTTP_REFERER']) || parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST) != $_SERVER['HTTP_HOST']) {
+    showAlerts(null, "الرجاء تسجيل الدخول أولا ", "../login.php");
+    exit();
+}
 
 
 ?>
 
-<title><?php $pageTitle = 'Admin | Orders Page'; echo getTitle($pageTitle) ?></title>
+<title><?php $pageTitle = 'Admin | Orders Page';
+        echo getTitle($pageTitle) ?></title>
 
 <!-- HTML structure remains the same -->
 
@@ -29,13 +30,13 @@ require '../config/functions.php';
     <!-- Sidebar End -->
 
     <!-- Content Start -->
-    <div class="content">
+    <div class="content" style="background-color: whitesmoke;">
         <!-- Navbar Start -->
         <?php require '../assets/navBar.php' ?>
         <!-- Navbar End -->
 
-        <div class="container-fluid pt-4 px-4">
-            <h2 class="text-center mb-4">إدارة الطلبات</h2>
+        <div class="container-fluid pt-4 px-4 " style="background-color: whitesmoke;">
+            <h2 class="text-center mb-4 text-dark">إدارة الطلبات</h2>
             <div class="table-responsive">
                 <table class="table table-striped table-bordered">
                     <thead>
@@ -53,7 +54,7 @@ require '../config/functions.php';
                     <tbody>
                         <?php
                         // استعلام لجلب جميع الطلبات
-                            $sql = "
+                        $sql = "
                                 SELECT 
                                     o.order_id, 
                                     u.username, 
@@ -78,33 +79,33 @@ require '../config/functions.php';
                         $result = mysqli_query($conn, $sql);
 
                         // عرض البيانات
-while ($order = mysqli_fetch_assoc($result)) {
-    $total_price = $order['price'] * $order['quantity']; // السعر الإجمالي للمنتج
-    ?>
-    <tr>
-        <td><?php echo $order['order_id']; ?></td>
-        <td><?php echo $order['username']; ?></td>
-        <td><?php echo $order['order_date']; ?></td>
-        <td><?php echo $order['product_name']; ?></td>
-        <td><?php echo $order['quantity']; ?></td>
-        <td><?php echo number_format($total_price, 2); ?> جنيه</td>
-        <td>
-            <select class="form-select status-update bg-white w-75" data-order-id="<?php echo $order['order_id']; ?>">
-                <?php
-                $status_options = ['قيد التحضير', 'تم الشحن', 'تم التوصيل', 'في الانتظار'];
-                foreach ($status_options as $status) {
-                    $selected = ($order['status'] == $status) ? 'selected' : '';
-                    echo '<option value="' . $status . '" ' . $selected . '>' . $status . '</option>';
-                }
-                ?>
-            </select>
-        </td>
-        <td>
-            <a href="order_details.php?order_id=<?php echo $order['order_id']; ?>" class="btn btn-info btn-sm">عرض التفاصيل</a>
-        </td>
-    </tr>
-    <?php
-}
+                        while ($order = mysqli_fetch_assoc($result)) {
+                            $total_price = $order['price'] * $order['quantity']; // السعر الإجمالي للمنتج
+                        ?>
+                            <tr>
+                                <td><?php echo $order['order_id']; ?></td>
+                                <td><?php echo $order['username']; ?></td>
+                                <td><?php echo $order['order_date']; ?></td>
+                                <td><?php echo $order['product_name']; ?></td>
+                                <td><?php echo $order['quantity']; ?></td>
+                                <td><?php echo number_format($total_price, 2); ?> جنيه</td>
+                                <td>
+                                    <select class="form-select status-update bg-white w-75" data-order-id="<?php echo $order['order_id']; ?>">
+                                        <?php
+                                        $status_options = ['قيد التحضير', 'تم الشحن', 'تم التوصيل', 'في الانتظار'];
+                                        foreach ($status_options as $status) {
+                                            $selected = ($order['status'] == $status) ? 'selected' : '';
+                                            echo '<option value="' . $status . '" ' . $selected . '>' . $status . '</option>';
+                                        }
+                                        ?>
+                                    </select>
+                                </td>
+                                <td>
+                                    <a href="order_details.php?order_id=<?php echo $order['order_id']; ?>" class="btn btn-info btn-sm">عرض التفاصيل</a>
+                                </td>
+                            </tr>
+                        <?php
+                        }
                         ?>
                     </tbody>
                 </table>
@@ -140,6 +141,6 @@ while ($order = mysqli_fetch_assoc($result)) {
     });
 </script>
 
-<?php  
-    require '../assets/footer.php';
+<?php
+require '../assets/footer.php';
 ?>

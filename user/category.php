@@ -40,40 +40,83 @@ if ($category) {
         $rows = array_chunk($products, 4); // 4 منتجات في كل صف
         foreach ($rows as $row) {
     ?>
-        <div class="row row-cols-1 row-cols-md-2 g-4 overflow-auto d-flex" style="white-space: nowrap;">
-            <?php foreach ($row as $product) {
-                $product_name = htmlspecialchars($product['name']);
-                $product_price = htmlspecialchars($product['price']);
-                $product_image = htmlspecialchars($product['image']);
-                $product_description = htmlspecialchars($product['description']);
+            <div class="row row-cols-2 row-cols-md-4 g-4 my-3">
+                <?php foreach ($row as $product) {
+                    $product_id = htmlspecialchars($product['id']);
+                    $product_name = htmlspecialchars($product['name']);
+                    $product_price = htmlspecialchars($product['price']);
+                    $product_image = htmlspecialchars($product['image']);
+                    $product_description = htmlspecialchars($product['description']);
 
-                // تحقق من وجود صورة المنتج
-                $image_path = '../uploads/img/' . $product_image;
-                if (!file_exists($image_path) || empty($product_image)) {
-                    $image_path = '../uploads/img/default.png';
-                }
-            ?>
-            <div class="col" style="min-width: 250px; max-width: 300px; height: 400px;">
-                <div class="card" style="width: 100%; height: 100%;">
-                    <img src="<?php echo $image_path; ?>" class="card-img-top" alt="Product Image" style="height: 150px; object-fit: cover;">
-                    <div class="card-body d-flex flex-column justify-content-between">
-                        <h5 class="card-title text-truncate"><?php echo $product_name; ?></h5>
-                        <p class="card-text text-truncate"><?php echo $product_description; ?></p>
-                        <p class="card-text"><strong><?php echo number_format($product_price); ?> EG</strong></p>
-                        <a href="product_details.php?product_id=<?php echo $product['id']; ?>" class="btn btn-primary btn-sm mt-auto">عرض التفاصيل</a>
+                    // تحقق من وجود صورة المنتج
+                    $image_path = '../uploads/img/' . $product_image;
+                    if (!file_exists($image_path) || empty($product_image)) {
+                        $image_path = '../uploads/img/default.png';
+                    }
+                ?>
+                    <div class="col">
+                        <a href="product_details.php?product_id=<?php echo $product['id'] ?>" style="text-decoration: none;">
+                            <div class="card shadow-sm" style="height: 100%; display: flex; flex-direction: column; justify-content: space-between;">
+                                <img src="<?php echo $image_path; ?>" class="card-img-top" alt="Product Image" style="height: 220px; object-position: center center;"> <!-- object-fit: cover; -->
+                                <div class="card-body d-flex flex-column">
+                        </a>
+                        <p class="card-title text-truncate"><?php echo $product_name; ?></p>
+                        <div class="mt-auto d-flex justify-content-between align-items-center">
+                            <p class="card-text mb-0"><strong><?php echo number_format($product_price); ?> EG</strong></p>
+                            <button class="btn btn-primary add-to-cart"
+                                data-id="<?php echo $product_id; ?>"
+                                data-name="<?php echo $product_name; ?>"
+                                data-price="<?php echo $product_price; ?>"
+                                data-image="<?php echo $product_image; ?>"
+                                data-quantity="1">
+                                +
+                            </button>
+                        </div>
                     </div>
-                </div>
             </div>
-            <?php } ?>
-        </div>
-    <?php
+</div>
+<?php } ?>
+</div>
+<?php
         }
     } else {
         echo '<p class="text-center">لا توجد منتجات في هذه الفئة.</p>';
     }
-    ?>
+?>
 </div>
-
+<script src="./assets/cart.js"></script>
 <?php
 require 'assets/footer.php';
 ?>
+
+
+
+
+<!-- <script>
+    $(".add-to-cart").click(function() {
+        var product_id = $(this).data("id");
+        var product_name = $(this).data("name");
+        var product_price = $(this).data("price");
+        var quantity = $(this).data("quantity");
+        var product_image = $(this).data("image");
+
+        $.ajax({
+            url: "add_to_cart.php",
+            type: "POST",
+            data: {
+                product_id: product_id,
+                product_name: product_name,
+                product_price: product_price,
+                quantity: quantity,
+                product_image: product_image
+            },
+            success: function(response) {
+
+                $("#notification").fadeIn().delay(3000).fadeOut();
+            },
+            error: function() {
+                alert("حدث خطأ أثناء إضافة المنتج إلى العربة.");
+            }
+        });
+    });
+</script> -->

@@ -4,27 +4,26 @@
     require '../config/connection.php';
     require '../config/functions.php';
 
-    if (!isset($_SERVER['HTTP_REFERER']) || parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST) != $_SERVER['HTTP_HOST']) {
-        showAlerts(null, "You cannot reach this page directly", "../login.php");
-        exit();
-    }
+    // if (!isset($_SERVER['HTTP_REFERER']) || parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST) != $_SERVER['HTTP_HOST']) {
+    //     showAlerts(null, "You cannot reach this page directly", "../login.php");
+    //     exit();
+    // }
 
 
     if(isset($_SESSION['userName']) && $_SESSION['role'] == 'admin') {
-    require_once '../assets/sideBar.php';
+        require_once '../assets/sideBar.php';
+        ?>
+        <!-- Content Start -->
+        <div class="content">
+            <!-- Navbar Start -->
+            <?php require_once '../assets/navBar.php'; 
 
-    ?>
-    <!-- Content Start -->
-    <div class="content">
-        <!-- Navbar Start -->
-        <?php require_once '../assets/navBar.php'; 
 
+        $result = mysqli_query($conn, "SELECT contact.msg_content, contact.created_at, users_data.userID, users_data.username, users_data.full_name , users_data.email FROM contact JOIN users_data ON contact.userID = users_data.userID");
 
-    $result = mysqli_query($conn, "SELECT contact.msg_content, contact.created_at, users_data.userID, users_data.username, users_data.full_name , users_data.email FROM contact JOIN users_data ON contact.userID = users_data.userID");
+        if (mysqli_num_rows($result) > 0) {
 
-    if (mysqli_num_rows($result) > 0) {
-
-    ?>
+        ?>
     <div class="container text-center my-3">
         <!-- breadcrumb START -->
         <!-- <nav aria-label="breadcrumb" class="container">

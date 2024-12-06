@@ -150,3 +150,34 @@
   }); // End of a document
 
 })(jQuery);
+
+        var swiper = new Swiper('.swiper-container', {
+          // Optional parameters
+          direction: 'horizontal',
+          loop: true,
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+          },
+          breakpoints: {
+            // Small screens
+            320: {
+              slidesPerView: 2,
+              spaceBetween: 20
+            },
+            // Medium screens
+            768: {
+              slidesPerView: 4,
+              spaceBetween: 20
+            },
+            // Large screens
+            1024: {
+              slidesPerView: 6,
+              spaceBetween: 30
+            }
+          }
+        });

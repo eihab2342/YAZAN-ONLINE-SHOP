@@ -1,144 +1,265 @@
 <?php
-    session_start();
-    require '../config/connection.php';
-    require '../config/functions.php';
-    $pageTitle = 'YAZAN | طلباتي';
-    $user_id = $_SESSION['userID'];
-?>
+session_start();
+include('../config/connection.php');
 
-<title><?php echo getTitle($pageTitle); ?></title>
-<?php
-    // جلب العناصر من سلة المشتريات
-    $cart_items = [];
-    if (isset($_SESSION['userID'])) {
-        $user_id = $_SESSION['userID'];
-        
-        // عملية الحذف
-        if (isset($_POST['remove'])) {
-            $cart_id = $_POST['cart_id'];
-            $delete_query = "DELETE FROM cart WHERE cart_id = '$cart_id' AND userID = '$user_id'";
-            $delete_result = mysqli_query($conn, $delete_query);
-            // if ($delete_result) {
-                // showAlerts("تم ح    ف المنتج بنجاح")
-                // echo '<script>alert("تم حذف المنتج من السلة بنجاح."); window.location.href="cart.php";</script>';
-            // } else {
-                // echo '<script>alert("حدث خطأ أثناء الحذف.");</script>';
-            // }
-        }
+$user_id = isset($_COOKIE['userID']) ? $_COOKIE['userID'] : $_SESSION['userID'];
+if(!$user_id) {
+    header("location: ../login.php");
+}
 
-        // جلب محتويات السلة
-        $query = "SELECT * FROM cart WHERE userID = '$user_id'";
-        $result = mysqli_query($conn, $query);
+// حذف المنتج من عربة التسوق عبر AJAX
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'remove_product') {
+    $cart_id = intval($_POST['cart_id']);
 
-        if ($result && mysqli_num_rows($result) > 0) {
-            while ($row = mysqli_fetch_assoc($result)) {
-                $cart_items[] = $row;
-            }
-        }
+    // تنفيذ الحذف من قاعدة البيانات
+    $delete_query = "DELETE FROM cart WHERE cart_id = '$cart_id' AND userID = '$user_id'";
+    $delete_result = mysqli_query($conn, $delete_query);
+
+    if ($delete_result) {
+        echo json_encode(['success' => true, 'message' => 'تم الحذف بنجاح!']);
     } else {
-        showAlerts(null, "يرجى تسجيل الدخول أولاً.", "../login.php");
+        echo json_encode(['success' => false, 'message' => 'فشل في حذف المنتج.']);
     }
+    exit;
+}
+
+// جلب المنتجات من قاعدة البيانات
+$query = "SELECT * FROM cart WHERE userID = '$user_id'";
+$result = mysqli_query($conn, $query);
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" href="../../uploads/img/logo3.jpg" type="image/x-icon">
+
+    <title>عربة التسوق</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <!-- تضمين مكتبة Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        .cart-page {
-            margin-top: 50px;
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            padding: 20px;
         }
-        .cart-summary {
-            margin-top: 30px;
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 24px;
+            margin-bottom: 20px;
         }
-        .order-summary-table td, .order-summary-table th {
-            text-align: right;
+
+        .back-btn {
+            font-size: 18px;
+            text-decoration: none;
+            color: #007bff;
+            display: flex;
+            align-items: center;
         }
-        .remove-icon {
-            color: #dc3545;
-            font-size: 20px;
-            cursor: pointer;
+
+        .back-btn:hover {
+            color: #0056b3;
         }
-        .remove-icon:hover {
-            color: #c82333;
+
+        .back-btn i {
+            margin-left: 5px;
         }
-        .product-image {
+
+        .product {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .product img {
             width: 100px;
             height: auto;
+            border-radius: 5px;
+        }
+
+        .product-details {
+            flex: 1;
+            margin-left: 10px;
+        }
+
+        .product-details p {
+            margin: 5px 0;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .quantity-controls button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .quantity-controls button:hover {
+            background-color: #0056b3;
+        }
+
+        .quantity-controls input {
+            width: 40px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 5px;
+        }
+
+        .remove-btn {
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .remove-btn:hover {
+            background-color: #c82333;
         }
     </style>
 </head>
+
 <body>
-
-<a href="index.php" class="btn btn-outline-secondary position-absolute" style="top: 20px; left: 20px;">
-    <i class="fas fa-arrow-left"></i> 
-</a>
-
-<div class="container cart-page">
-    <h2 class="text-center">Your Cart</h2>
-
-    <div class="col-md-12">
-        <h3>Order Summary</h3>
-        <table class="table table-bordered order-summary-table">
-            <tr>
-                <th>Item</th>
-                <th>Image</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Total</th>
-                <th>Action</th>
-            </tr>
-            <?php 
-            $total_price = 0; // متغير لحساب الإجمالي
-            if (count($cart_items) > 0) { 
-                foreach ($cart_items as $cart_item) { 
-                    $item_total = $cart_item['product_price'] * $cart_item['quantity'];
-                    $total_price += $item_total;
-                    echo '<tr>';
-                    echo '<td>' . htmlspecialchars($cart_item['product_name']) . '</td>';
-                    $product_image = htmlspecialchars($cart_item['product_image']);
-                    $image_path = '../uploads/img/' . $product_image;
-
-                    //بنشوف لو الصورة موجودة ولا لا
-                    if (!file_exists($image_path) || empty($product_image)) {
-                        $image_path = '../uploads/img/default.png'; 
-                    }
-
-                    echo '<td><img src="' . $image_path . '" class="product-image" alt="Product Image"></td>';
-                    echo '<td>' . htmlspecialchars($cart_item['product_price']) . '</td>';
-                    echo '<td>' . htmlspecialchars($cart_item['quantity']) . '</td>';
-                    echo '<td>' . htmlspecialchars($item_total) . '</td>';
-                    echo '<td>
-                            <form method="POST" action="">
-                                <input type="hidden" name="cart_id" value="' . htmlspecialchars($cart_item['cart_id']) . '">
-                                <button type="submit" name="remove" class="remove-icon btn btn-sm"><i class="fa-solid fa-delete-left"></i></button>
-                            </form>
-                        </td>';
-                    echo '</tr>';
-                }  
-            } else {
-                echo '<tr><td colspan="6" class="text-center">لا يوجد منتجات تمت إضافتها للعربة</td></tr>';
-            }
-            ?>
-        </table>
-
-        <tr>
-            <td colspan="5" class="text-end"><strong>Total</strong></td>
-            <td><strong><?php echo htmlspecialchars(number_format($total_price)) ?> EG</strong></td>
-        </tr>
-
-        <a href="check_out.php" class="btn btn-warning w-100 my-4 <?php echo (count($cart_items) == 0) ? 'disabled' : ''; ?>">
-            Proceed to Checkout
+    <div class="header">
+        <a href="index.php" class="back-btn">
+            <i class="fas fa-arrow-left"></i>
+            العودة إلى الصفحة الرئيسية
         </a>
+        <h1>عربة التسوق</h1>
     </div>
-</div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/bootstrap-icons.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <?php while ($row = mysqli_fetch_assoc($result)) { ?>
+        <div class="product" id="product-<?php echo $row['cart_id']; ?>">
+            <img src="../uploads/img/<?php echo $row['product_image']; ?>" alt="Product Image">
+            <div class="product-details">
+                <p><?php echo $row['product_name']; ?></p>
+                <p class="price text-danger" id="price-<?php echo $row['cart_id']; ?>">
+                    EGP <?php echo $row['product_price'] * $row['quantity']; ?>
+                </p>
 
+                <div class="quantity-controls">
+                    <button class="decrease-btn" onclick="updateQuantity(<?php echo $row['cart_id']; ?>, 'decrease')">-</button>
+                    <input type="text" id="quantity-<?php echo $row['cart_id']; ?>" value="<?php echo $row['quantity']; ?>" readonly>
+                    <button class="increase-btn" onclick="updateQuantity(<?php echo $row['cart_id']; ?>, 'increase')">+</button>
+                </div>
+            </div>
+
+            <!-- زر الحذف -->
+            <button class="remove-btn" onclick="removeFromCart(<?php echo $row['cart_id']; ?>)">
+                🗑
+            </button>
+        </div>
+    <?php } ?>
+
+    <!-- زر Checkout -->
+    <a href="check_out.php" class="btn btn-warning mt-4 d-block text-center" style="width: 30%;">
+        <i class="fas fa-credit-card"></i> Checkout
+    </a>
+
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script>
+        // تحديث الكمية في LocalStorage وواجهة المستخدم
+        function updateQuantity(productId, change) {
+            let quantityInput = document.getElementById('quantity-' + productId);
+            let priceTag = document.getElementById('price-' + productId);
+            let quantity = parseInt(quantityInput.value);
+
+            quantity += change;
+            if (quantity < 1) quantity = 1;
+
+            quantityInput.value = quantity;
+            let price = parseFloat(priceTag.innerText.replace('EGP ', ''));
+            let total = price * quantity;
+            priceTag.innerText = `EGP ${total}`;
+
+            saveToLocalStorage(productId, quantity);
+            updateGrandTotal();
+
+            showToast('تم تحديث الكمية.', 'success');
+        }
+
+        function saveToLocalStorage(productId, quantity) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || {};
+            cart[productId] = quantity;
+            localStorage.setItem('cart', JSON.stringify(cart));
+        }
+
+        function updateGrandTotal() {
+            let grandTotal = 0;
+            const prices = document.querySelectorAll('[id^="price-"]');
+            prices.forEach(priceTag => {
+                grandTotal += parseFloat(priceTag.innerText.replace('EGP ', ''));
+            });
+            document.getElementById('grandTotal').innerText = `EGP ${grandTotal}`;
+        }
+
+        // حذف المنتج باستخدام AJAX وتحديث الواجهة
+        function removeFromCart(cartId) {
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        try {
+                            const response = JSON.parse(xhr.responseText);
+
+                            if (response.success) {
+                                const productElement = document.getElementById(`product-${cartId}`);
+                                if (productElement) {
+                                    productElement.remove();
+                                }
+                                showToast(response.message, 'success');
+                            } else {
+                                showToast(response.message, 'error');
+                            }
+                        } catch (error) {
+                            console.error("Error parsing response:", error);
+                            showToast('حدث خطأ في الحذف.', 'error');
+                        }
+                    } else {
+                        showToast('فشل الطلب، يرجى المحاولة لاحقًا.', 'error');
+                    }
+                }
+            };
+
+            xhr.send(`action=remove_product&cart_id=${cartId}`);
+        }
+
+        // عرض رسائل التوست
+        function showToast(message, type) {
+            Toastify({
+                text: message,
+                duration: 3000,
+                gravity: 'top',
+                position: 'center',
+                backgroundColor: type === 'success' ? '#28a745' : '#dc3545',
+                close: true,
+            }).showToast();
+        }
+    </script>
 </body>
+
 </html>
